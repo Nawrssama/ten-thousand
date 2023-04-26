@@ -19,7 +19,7 @@ class GameLogic() :
          """
         
         r = tuple(random.randint(1,6) for _ in range(num_dice))
-        print(r)
+        # print(r)
         return r
 
     def calculate_score(tup):
@@ -29,7 +29,7 @@ class GameLogic() :
         '''
         unbanked_points = 0
         count_result = Counter(tup)
-        print(count_result.most_common())
+        # print(count_result.most_common())
 
         ###################### if dice roll was three pairs ######################
 
