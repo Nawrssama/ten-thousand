@@ -1,156 +1,128 @@
 import random
 from collections import Counter
 
-class GameLogic() :
+
+class GameLogic:
     def __init__(self):
         pass
 
-    
-
-    def roll_dice(num_dice):
-        """
-        Simulates the roll of one or more six-sided dice.
-
-        Parameters:
-        num_dice (int): the number of dice to roll
-
-        Returns:
-        tuple: a tuple of `num_dice` random integers between 1 and 6, inclusive
-         """
-        
-        r = tuple(random.randint(1,6) for _ in range(num_dice))
-        # print(r)
-        return r
-
     def calculate_score(tup):
-        '''
-        The calculate_score function takes in a tuple of integers representing the outcome of rolling several dice. It returns an integer representing the unbanked points that can be scored based on the outcome of the roll.
-        
-        '''
-        unbanked_points = 0
-        count_result = Counter(tup)
-        # print(count_result.most_common())
+        """
+        this function recives a tuple and calculate the unbanked points for a roll of dice depands on the game rule  
+        """
 
-        ###################### if dice roll was three pairs ######################
+        unbancked_points = 0
+        num_counter = Counter(tup)
 
+        if 1 == num_counter[5] or num_counter[5] == 2:
+            unbancked_points += 50 * num_counter[5]
+        if 1 == num_counter[1] or num_counter[1] == 2:
+            unbancked_points += 100 * num_counter[1]
+        # 3 of a kind
+        if num_counter[1] == 3:
+            unbancked_points += 1000
+        if num_counter[2] == 3:
+            unbancked_points += 200
+        if num_counter[3] == 3:
+            unbancked_points += 300
+        if num_counter[4] == 3:
+            unbancked_points += 400
+        if num_counter[5] == 3:
+            unbancked_points += 500
+        if num_counter[6] == 3:
+            unbancked_points += 600
+        # 4 of a kind
+        if num_counter[1] == 4:
+            unbancked_points += 2000
+        if num_counter[2] == 4:
+            unbancked_points += 400
+        if num_counter[3] == 4:
+            unbancked_points += 600
+        if num_counter[4] == 4:
+            unbancked_points += 800
+        if num_counter[5] == 4:
+            unbancked_points += 1000
+        if num_counter[6] == 4:
+            unbancked_points += 1200
+        # 5 of a kind
+        if num_counter[1] == 5:
+            unbancked_points += 4000
+        if num_counter[2] == 5:
+            unbancked_points += 800
+        if num_counter[3] == 5:
+            unbancked_points += 1200
+        if num_counter[4] == 5:
+            unbancked_points += 1600
+        if num_counter[5] == 5:
+            unbancked_points += 2000
+        if num_counter[6] == 5:
+            unbancked_points += 2400
+        # 6 of a kind
+        if num_counter[1] == 6:
+            unbancked_points += 8000
+        if num_counter[2] == 6:
+            unbancked_points += 1600
+        if num_counter[3] == 6:
+            unbancked_points += 2400
+        if num_counter[4] == 6:
+            unbancked_points += 3200
+        if num_counter[5] == 6:
+            unbancked_points += 4000
+        if num_counter[6] == 6:
+            unbancked_points += 4800
 
-        # if len(count_result.most_common()) == 3 and count_result[2]==2 and count_result[3]==2 and count_result[6]==2 :
-        #     unbanked_points = 1500
-        
-        #     return unbanked_points
+        if len(num_counter) == 3 and len(set(num_counter.values())) == 1 and list(set(num_counter.values()))[0] == 2:
+            unbancked_points = 1500
 
-        if len(count_result.most_common()) == 3 and all(count == 2 for _, count in count_result.most_common()):
-            unbanked_points = 1500
+        if len(num_counter) == 2 and list(set(num_counter.values()))[0] == 3:
+            unbancked_points = unbancked_points*2
 
-            return unbanked_points
+        # stright 1-6
+        if len(num_counter) == 6:
+            unbancked_points = 2000
+        return unbancked_points
 
+    def roll_dice(int):
+        """
+        this function recives an integar represents the number of dice we use to roll and gives back a random numbers between 1-6 depands on the int given  
+        """
+        list = []
+        for i in range(int):
+            x = random.randint(1, 6)
+            list.append(x)
+        return tuple(list)
 
-        ###################### if dice roll was Straight 1- 6 ######################
+    def validate_keepers(tup1, tup2):
+        """this function will take two tuples and check if the first tuple contain the value from the scond tuple with the same itarrtion"""
+        to_test_cheater = list(tup1)
+        for i in tup2:
+            if i not in to_test_cheater:
+                return False
 
-        if count_result[1]==1 and count_result[2]==1 and count_result[3]==1 and count_result[4]==1 and count_result [5]==1 and count_result[6]==1:
-            unbanked_points = 2000
-            return unbanked_points
+            index = to_test_cheater.index(i)
+            to_test_cheater.pop(index)
+        return True
 
-        ###################### if dice roll was two of a pairs ######################
+    def get_scorers(dice):
+        """ this function will take a tuple and return a tuple contain the values that give a score """
 
-        # if len(count_result)==2 and len(set(count_result.values()))==1 and list(set(count_result.values()))[0]==3:
-        #     unbanked_points = unbanked_points*2  
+        all_dice_score = GameLogic.calculate_score(dice)
 
-        
+        if all_dice_score == 0:
+            return tuple()
 
-        ########################### ones ############################
+        dice_with_score = []
 
-        if count_result[1]==3:
-            unbanked_points += 1000
+        for i, val in enumerate(dice):
+            sub_roll = dice[:i] + dice[i + 1:]
+            sub_score = GameLogic.calculate_score(sub_roll)
 
-        if count_result[1]==4:
-            unbanked_points += 2000
+            if sub_score != all_dice_score:
+                dice_with_score.append(val)
 
-        if count_result[1]==5:
-            unbanked_points += 4000
+        return tuple(dice_with_score)
 
-        if count_result[1]==6:
-            unbanked_points += 8000
-
-        ######### if ones was 1 or 2
-        if count_result[1] >=1 and count_result[1]<3:
-            unbanked_points += 100*count_result[1]
-
-        ########################### fives ############################
-
-        if count_result[5]==3:
-            unbanked_points += 500
-
-        if count_result[5]==4:
-            unbanked_points += 1000
-
-        if count_result[5]==5:
-            unbanked_points += 2000
-
-        if count_result[5]==6:
-            unbanked_points += 4000
-
-        ######### if fives was 1 or 2
-        if count_result[5] >=1 and count_result[5]<3:
-            unbanked_points += 50*count_result[5]
-
-        ########################### three of a kind ############################
-
-        if count_result[2]==3:
-            unbanked_points += 200
-
-        if count_result[3]==3:
-            unbanked_points += 300
-
-        if count_result[4]==3:
-            unbanked_points += 400
-
-        if count_result[6]==3:
-            unbanked_points += 600
-
-        ########################### four of a kind ############################
-
-        if count_result[2]==4:
-            unbanked_points += 400
-
-        if count_result[3]==4:
-            unbanked_points += 600
-
-        if count_result[4]==4:
-            unbanked_points += 800
-
-        if count_result[6]==4:
-            unbanked_points += 1200
-
-        ########################### five of a kind ############################
-
-        if count_result[2]==5:
-            unbanked_points += 800
-
-        if count_result[3]==5:
-            unbanked_points += 1200
-
-        if count_result[4]==5:
-            unbanked_points += 1600
-
-        if count_result[6]==5:
-            unbanked_points += 2400
-
-        ########################### six of a kind ############################
-
-        if count_result[2]==6:
-            unbanked_points += 1600
-
-        if count_result[3]==6:
-            unbanked_points += 2400
-
-        if count_result[4]==6:
-            unbanked_points += 3200
-
-        if count_result[6]==6:
-            unbanked_points += 4800
-
-        return unbanked_points
+    
 
         
         
