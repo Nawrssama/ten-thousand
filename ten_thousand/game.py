@@ -8,7 +8,7 @@ validate_keepers = GameLogic.validate_keepers
 get_scorers = GameLogic.get_scorers
 
 
-def play(roller=GameLogic.roll_dice, num_rounds=10):
+def play(roller=GameLogic.roll_dice, num_rounds=20):
     """
     Starts a game of Ten Thousand.
     Args:
@@ -191,3 +191,8 @@ def end_game(total):
 
 if __name__ == "__main__":
     play()
+
+
+class Game:
+    def play(self):
+        play(roller=GameLogic.roll_dice, num_rounds=20)
