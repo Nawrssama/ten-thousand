@@ -5,8 +5,8 @@ at same level as pyproject.toml
 from abc import ABC, abstractmethod
 import builtins
 import re
-from ten_thousand.game_logic import Game
-from ten_thousand.game_logic import GameLogic
+from ten_thousand.game import *
+from ten_thousand.game_logic import *
 
 
 class BaseBot(ABC):
@@ -49,7 +49,8 @@ class BaseBot(ABC):
 
             # parse the proper string
             # E.g. "You have 700 unbanked points and 2 dice remaining"
-            unbanked_points_part, dice_remaining_part = line.split("unbanked points")
+            unbanked_points_part, dice_remaining_part = line.split(
+                "unbanked points")
 
             # Hold on to unbanked points and dice remaining for determining rolling vs. banking
             self.unbanked_points = int(re.sub("\D", "", unbanked_points_part))
@@ -136,10 +137,12 @@ class NervousNellie(BaseBot):
         return "b"
 
 
-class nawrs(BaseBot):
+class Esmail(BaseBot):
     def _roll_bank_or_quit(self):
         """your logic here"""
-        return "b"
+        if self.unbanked_points >= 500 or self.dice_remaining <= 2:
+            return "b"
+        return "r"
 
     def _enter_dice(self):
         """simulate user entering which dice to keep.
@@ -151,4 +154,4 @@ class nawrs(BaseBot):
 if __name__ == "__main__":
     num_games = 100
     NervousNellie.play(num_games)
-    nawrs.play(num_games)
+    Esmail.play(num_games)
